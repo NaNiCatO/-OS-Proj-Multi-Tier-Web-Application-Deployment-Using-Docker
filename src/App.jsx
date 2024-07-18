@@ -27,9 +27,9 @@ export default function ProductsDemo() {
     name: "",
     category: null,
     price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "INSTOCK",
+    // quantity: 0,
+    // rating: 0,
+    // inventoryStatus: "INSTOCK",
   };
 
   const [products, setProducts] = useState(null);
@@ -59,7 +59,11 @@ export default function ProductsDemo() {
     setSubmitted(false);
     setProductDialog(true);
   };
+  console.log("new product" + product);
+  //show select item id
+  console.log("selectedProducts", selectedProducts);
 
+  // show create product 
   const hideDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
@@ -77,35 +81,38 @@ export default function ProductsDemo() {
     setSubmitted(true);
 
     if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
+        let _products = [...products];
+        let _product = { ...product };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
+        if (product.id) {
+            const index = findIndexById(product.id);
 
-        _products[index] = _product;
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Updated",
-          life: 3000,
-        });
-      } else {
-        _product.id = createId();
-        _products.push(_product);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
-          life: 3000,
-        });
-      }
+            _products[index] = _product;
+            toast.current.show({
+                severity: "success",
+                summary: "Successful",
+                detail: "Product Updated",
+                life: 3000,
+            });
+        } else {
+            _product.id = createId();
+            _products.push(_product);
+            toast.current.show({
+                severity: "success",
+                summary: "Successful",
+                detail: "Product Created",
+                life: 3000,
+            });
+        }
 
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
+        setProducts(_products);
+        setProductDialog(false);
+        setProduct(emptyProduct);
+
+        console.log("Product data sent:", _product);
     }
-  };
+};
+
 
   const editProduct = (product) => {
     setProduct({ ...product });
@@ -279,6 +286,8 @@ export default function ProductsDemo() {
     }
   };
 
+  console.log("new created product" + product);
+
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-end">
       <h4 className="m-0">Manage Products</h4>
@@ -310,7 +319,6 @@ export default function ProductsDemo() {
   );
   const deleteProductsDialogFooter = (
     <React.Fragment>
-      
       <Button
         label="Yes"
         icon="pi pi-check"
@@ -415,21 +423,7 @@ export default function ProductsDemo() {
             }}
           ></Column>
 
-          <Column
-            field="inventoryStatus"
-            header="Status"
-            body={statusBodyTemplate}
-            sortable
-            style={{ minWidth: "12rem" }}
-            headerStyle={{
-              minWidth: "9rem",
-              backgroundColor: "#344a5f",
-              color: "white",
-              textTransform: "uppercase",
-              overflow: "auto",
-              textAlign: "center",
-            }}
-          ></Column>
+          
           <Column
             body={actionBodyTemplate}
             exportable={false}
