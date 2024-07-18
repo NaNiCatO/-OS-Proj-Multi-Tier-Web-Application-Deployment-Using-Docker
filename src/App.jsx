@@ -11,7 +11,7 @@ import { RadioButton } from "primereact/radiobutton";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
+// import { Tag } from "primereact/tag";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -238,14 +238,14 @@ export default function ProductsDemo() {
     return formatCurrency(rowData.price);
   };
 
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.inventoryStatus}
-        severity={getSeverity(rowData)}
-      ></Tag>
-    );
-  };
+  // const statusBodyTemplate = (rowData) => {
+  //   return (
+  //     <Tag
+  //       value={rowData.inventoryStatus}
+  //       severity={getSeverity(rowData)}
+  //     ></Tag>
+  //   );
+  // };
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -270,21 +270,21 @@ export default function ProductsDemo() {
     );
   };
 
-  const getSeverity = (product) => {
-    switch (product.inventoryStatus) {
-      case "INSTOCK":
-        return "success";
+  // const getSeverity = (product) => {
+  //   switch (product.inventoryStatus) {
+  //     case "INSTOCK":
+  //       return "success";
 
-      case "LOWSTOCK":
-        return "warning";
+  //     case "LOWSTOCK":
+  //       return "warning";
 
-      case "OUTOFSTOCK":
-        return "danger";
+  //     case "OUTOFSTOCK":
+  //       return "danger";
 
-      default:
-        return null;
-    }
-  };
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   console.log("new created product" + product);
 
