@@ -30,6 +30,7 @@ export default function ProductsDemo() {
     // quantity: 0,
     // rating: 0,
     // inventoryStatus: "INSTOCK",
+    avalialbe: true,
   };
 
   const [products, setProducts] = useState(null);
