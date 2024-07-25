@@ -5,7 +5,12 @@ import os
 app = Flask(__name__)
 
 # Configure the PostgreSQL database connection
-DATABASE_URI = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
+# DATABASE_URI = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configure the PostgreSQL database connection
+DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -20,8 +25,15 @@ class Product(db.Model):
     category = db.Column(db.String, nullable=False) # VARCHAR NOT NULL in SQL
     available = db.Column(db.Boolean, nullable=False) # BOOLEAN NOT NULL in SQL
 
+
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Hello, World!"})
+
+
 @app.route('/products', methods=['GET'])
 def get_products():
+    print("products_all")
     try:
         # Query all products
         products = Product.query.all()
@@ -40,4 +52,4 @@ def get_products():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

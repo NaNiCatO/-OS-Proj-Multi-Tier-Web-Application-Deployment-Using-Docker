@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:13
+    container_name: postgres_container
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
@@ -12,15 +13,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  web:
-    build: .
-    command: flask run --host=0.0.0.0
-    volumes:
-      - .:/app
+  backend:
+    build:
+      context: ./Backend_Service
+      dockerfile: Dockerfile
+    container_name: flask_backend
     ports:
       - "5000:5000"
     depends_on:
       - db
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://postgres:mysecretpassword@db:5432/postgres
 
 volumes:
   postgres_data:
