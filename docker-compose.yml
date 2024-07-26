@@ -25,5 +25,14 @@ services:
     environment:
       - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://postgres:mysecretpassword@db:5432/postgres
 
+  frontend:
+    build:
+      context: ./Frontend_Service
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
