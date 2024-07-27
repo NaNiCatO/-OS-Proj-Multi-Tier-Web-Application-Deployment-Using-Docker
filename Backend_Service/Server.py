@@ -93,5 +93,47 @@ def get_all_products():
     session.close()
     return jsonify(results)
 
+
+@app.route('/create', methods=['POST'])
+def create_product():
+    session = Session()
+    try:
+        # Extract data from the JSON request body
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid input"}), 400
+        
+        # Extract fields from the request data
+        code = data.get('code')
+        name = data.get('name')
+        price = data.get('price')
+        category = data.get('category')
+        available = data.get('available')
+        
+        # Check if a product with the same code already exists
+        if session.query(Product).filter_by(code=code).first():
+            return jsonify({"error": "Product with this code already exists."}), 400
+
+        # Create and save the new product
+        product = Product(
+            code=code,
+            name=name,
+            price=price,
+            category=category,
+            available=available
+        )
+        session.add(product)
+        session.commit()
+
+        # Return a success response
+        return jsonify(data), 201
+
+    except Exception as e:
+        # Handle and return error information
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
