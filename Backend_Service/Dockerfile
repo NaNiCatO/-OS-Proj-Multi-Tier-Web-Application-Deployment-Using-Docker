@@ -10,8 +10,11 @@ COPY . .
 # Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Ensure the script has execute permissions
+RUN chmod +x start.sh
+
 # Expose port 5000 to the outside world
 EXPOSE 5000
 
 # Run the application
-CMD ["./start.sh"]
+CMD ["sh","start.sh"]

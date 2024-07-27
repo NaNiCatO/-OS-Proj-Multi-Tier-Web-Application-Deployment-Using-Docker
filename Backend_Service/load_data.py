@@ -15,6 +15,7 @@ products = [
 ]
 
 # Connect to the PostgreSQL database
+connection = None
 try:
     connection = psycopg2.connect(
         user="postgres",
