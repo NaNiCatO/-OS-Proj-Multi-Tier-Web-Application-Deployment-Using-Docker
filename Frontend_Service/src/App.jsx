@@ -118,6 +118,8 @@ export default function ProductsDemo() {
   const editProduct = (product) => {
     setProduct({ ...product });
     setProductDialog(true);
+    console.log("Editing product:", product);  
+
   };
 
   const confirmDeleteProduct = (product) => {
@@ -185,6 +187,7 @@ export default function ProductsDemo() {
       life: 3000,
     });
   };
+
 
   const onCategoryChange = (e) => {
     let _product = { ...product };
@@ -271,21 +274,6 @@ export default function ProductsDemo() {
     );
   };
 
-  // const getSeverity = (product) => {
-  //   switch (product.inventoryStatus) {
-  //     case "INSTOCK":
-  //       return "success";
-
-  //     case "LOWSTOCK":
-  //       return "warning";
-
-  //     case "OUTOFSTOCK":
-  //       return "danger";
-
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   console.log("new created product" + product);
 
