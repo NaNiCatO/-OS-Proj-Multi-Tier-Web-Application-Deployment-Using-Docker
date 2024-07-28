@@ -6,6 +6,11 @@ export const ProductService = {
       .then(res => res.data)
       .catch(error => { throw error });
   },
+  searchProducts(name, price, order_by, category, available) {
+    return axios.get(`http://api.example.com/products?name=${name}&price=${price}&order_by=${order_by}&category=${category}&available=${available}`)
+      .then(res => res.data)
+      .catch(error => { throw error });
+  },
   createProduct(product) {
     return axios.post('http://api.example.com/products', product)
       .then(res => res.data)
