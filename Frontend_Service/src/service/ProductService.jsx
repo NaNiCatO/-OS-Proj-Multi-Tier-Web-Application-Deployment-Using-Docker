@@ -1,11 +1,10 @@
-export const ProductService2 = {
+export const ProductService = {
   getProductsData() {
     return [
       {
         id: 1,
         code: "f230fh0g3",
         name: "Bamboo Watch",
-        description: "Product Description",
         price: 65,
         category: "Accessories",
         avaliable: true,
@@ -14,7 +13,15 @@ export const ProductService2 = {
         id: 2,
         code: "nvklal433",
         name: "Black Watch",
-        description: "Product Description",
+        price: 72,
+        category: "Accessories",
+        avalialbe: false,
+
+      },
+      {
+        id: 3,
+        code: "nvklal433",
+        name: "Black Watch",
         price: 72,
         category: "Accessories",
         avalialbe: false,
@@ -29,7 +36,6 @@ export const ProductService2 = {
         id: 1,
         code: "f230fh0g3",
         name: "Bamboo Watch",
-        description: "Product Description",
         price: 65,
         category: "Accessories",
         avaliable: true,

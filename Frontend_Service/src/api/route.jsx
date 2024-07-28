@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const ProductService = {
   getProducts() {
-    return axios.get('http://backend:5000/products')
+    return axios.get('http://backend:5000/all_products')
       .then(res => res.data)
       .catch(error => { throw error });
   },
@@ -12,7 +12,7 @@ export const ProductService = {
       .catch(error => { throw error });
   },
   createProduct(product) {
-    return axios.post('http://backend:5000/create', product)
+    return axios.post('http://localhost:5000/create', product)
       .then(res => res.data)
       .catch(error => { throw error });
   },
