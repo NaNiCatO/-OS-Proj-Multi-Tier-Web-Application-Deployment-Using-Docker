@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const ProductService = {
   getProducts() {
-    return axios.get('http://api.example.com/products')
+    return axios.get('http://backend:5000/products')
       .then(res => res.data)
       .catch(error => { throw error });
   },

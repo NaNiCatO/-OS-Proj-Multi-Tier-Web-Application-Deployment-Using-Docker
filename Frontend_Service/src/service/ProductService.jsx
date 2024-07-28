@@ -1,4 +1,4 @@
-export const ProductService = {
+export const ProductService2 = {
   getProductsData() {
     return [
       {

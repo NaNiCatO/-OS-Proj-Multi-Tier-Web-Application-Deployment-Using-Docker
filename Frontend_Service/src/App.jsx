@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "./service/ProductService";
+import { ProductService } from "../src/api/route";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
@@ -11,7 +11,6 @@ import { RadioButton } from "primereact/radiobutton";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-// import { Tag } from "primereact/tag";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,19 +20,17 @@ import {
   faTrash,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
+
 export default function ProductsDemo() {
   let emptyProduct = {
     id: null,
     name: "",
     category: null,
     price: 0,
-    // quantity: 0,
-    // rating: 0,
-    // inventoryStatus: "INSTOCK",
-    avalialbe: true,
+    available: true,
   };
 
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -60,11 +57,7 @@ export default function ProductsDemo() {
     setSubmitted(false);
     setProductDialog(true);
   };
-  console.log("new product" + product);
-  //show select item id
   console.log("selectedProducts", selectedProducts);
-
-  // show create product 
   const hideDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
@@ -80,46 +73,48 @@ export default function ProductsDemo() {
 
   const saveProduct = () => {
     setSubmitted(true);
-
+  
     if (product.name.trim()) {
-        let _products = [...products];
-        let _product = { ...product };
-
-        if (product.id) {
-            const index = findIndexById(product.id);
-
-            _products[index] = _product;
-            toast.current.show({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Updated",
-                life: 3000,
-            });
-        } else {
-            _product.id = createId();
-            _products.push(_product);
-            toast.current.show({
-                severity: "success",
-                summary: "Successful",
-                detail: "Product Created",
-                life: 3000,
-            });
-        }
-
-        setProducts(_products);
-        setProductDialog(false);
-        setProduct(emptyProduct);
-
-        console.log("Product data sent:", _product);
+      let _products = [...products];
+      let _product = { ...product };
+  
+      if (product.id) {
+        ProductService.updateProduct(_product).then((data) => {
+          const index = findIndexById(product.id);
+          _products[index] = data;
+          setProducts(_products);
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Product Updated",
+            life: 3000,
+          });
+        });
+      } else {
+        ProductService.createProduct(_product).then((data) => {
+          // Use data returned from the server, which should have the new id
+          _products.push(data);
+          setProducts(_products);
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Product Created",
+            life: 3000,
+          });
+        });
+      }
+  
+      setProductDialog(false);
+      setProduct(emptyProduct);
     }
-};
+  };
 
+  console.log("product", product);
+  
 
   const editProduct = (product) => {
     setProduct({ ...product });
     setProductDialog(true);
-    console.log("Editing product:", product);  
-
   };
 
   const confirmDeleteProduct = (product) => {
@@ -128,16 +123,17 @@ export default function ProductsDemo() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Product Deleted",
-      life: 3000,
+    ProductService.deleteProduct(product.id).then(() => {
+      let _products = products.filter((val) => val.id !== product.id);
+      setProducts(_products);
+      setDeleteProductDialog(false);
+      setProduct(emptyProduct);
+      toast.current.show({
+        severity: "success",
+        summary: "Successful",
+        detail: "Product Deleted",
+        life: 3000,
+      });
     });
   };
 
@@ -154,17 +150,9 @@ export default function ProductsDemo() {
     return index;
   };
 
-  const createId = () => {
-    let id = "";
-    let chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
+  // const createId = () => {
+  //   return Math.floor(Math.random() * 100000);
+  // };
 
   const exportCSV = () => {
     dt.current.exportCSV();
@@ -176,7 +164,6 @@ export default function ProductsDemo() {
 
   const deleteSelectedProducts = () => {
     let _products = products.filter((val) => !selectedProducts.includes(val));
-
     setProducts(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
@@ -188,10 +175,8 @@ export default function ProductsDemo() {
     });
   };
 
-
   const onCategoryChange = (e) => {
     let _product = { ...product };
-
     _product["category"] = e.value;
     setProduct(_product);
   };
@@ -199,18 +184,14 @@ export default function ProductsDemo() {
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || "";
     let _product = { ...product };
-
     _product[`${name}`] = val;
-
     setProduct(_product);
   };
 
   const onInputNumberChange = (e, name) => {
     const val = e.value || 0;
     let _product = { ...product };
-
     _product[`${name}`] = val;
-
     setProduct(_product);
   };
 
@@ -242,15 +223,6 @@ export default function ProductsDemo() {
     return formatCurrency(rowData.price);
   };
 
-  // const statusBodyTemplate = (rowData) => {
-  //   return (
-  //     <Tag
-  //       value={rowData.inventoryStatus}
-  //       severity={getSeverity(rowData)}
-  //     ></Tag>
-  //   );
-  // };
-
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -274,9 +246,6 @@ export default function ProductsDemo() {
     );
   };
 
-
-  console.log("new created product" + product);
-
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-end">
       <h4 className="m-0">Manage Products</h4>
@@ -291,11 +260,13 @@ export default function ProductsDemo() {
       </IconField>
     </div>
   );
+
   const productDialogFooter = (
     <React.Fragment>
       <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
     </React.Fragment>
   );
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -306,6 +277,7 @@ export default function ProductsDemo() {
       />
     </React.Fragment>
   );
+
   const deleteProductsDialogFooter = (
     <React.Fragment>
       <Button
@@ -412,7 +384,6 @@ export default function ProductsDemo() {
             }}
           ></Column>
 
-          
           <Column
             body={actionBodyTemplate}
             exportable={false}
