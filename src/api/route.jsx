@@ -12,7 +12,7 @@ export const ProductService = {
       .catch(error => { throw error });
   },
   createProduct(product) {
-    return axios.post('http://api.example.com/products', product)
+    return axios.post('http://backend:5000/create', product)
       .then(res => res.data)
       .catch(error => { throw error });
   },
