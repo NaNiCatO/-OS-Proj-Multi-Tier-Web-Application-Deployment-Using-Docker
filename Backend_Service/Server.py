@@ -72,9 +72,10 @@ def get_products():
     ]
 
     session.close()
+    print("get_products")
     return jsonify(results)
 
-@app.route('/all-products', methods=['GET'])
+@app.route('/all_products', methods=['GET'])
 def get_all_products():
     session = Session()
     products = session.query(Product).all()
@@ -89,7 +90,7 @@ def get_all_products():
         }
         for product in products
     ]
-
+    print("get_all_products")
     session.close()
     return jsonify(results)
 
@@ -126,6 +127,7 @@ def create_product():
         session.commit()
 
         # Return a success response
+        print("create_product")
         return jsonify(data), 201
 
     except Exception as e:
