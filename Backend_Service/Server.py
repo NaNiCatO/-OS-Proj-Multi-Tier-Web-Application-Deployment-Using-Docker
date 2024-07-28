@@ -32,7 +32,7 @@ def home():
     return 'Welcome to the Products Service!'
 
 
-@app.route('/products', methods=['GET'])
+@app.route('/search_products', methods=['GET'])
 def get_products():
     session = Session()
     query = session.query(Product)
