@@ -7,13 +7,7 @@ axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 export const ProductService = {
   async getProducts() {
     try {
-      const response = await axios.get('http://localhost:5001/products'
-        ,{
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json'
-        }}
-        );
+      const response = await axios.get('http://localhost:5000/all_products');
       return response.data
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -24,7 +18,7 @@ export const ProductService = {
     //   .catch(error => { throw error });
   },
   searchProducts(name, price, order_by, category, available) {
-    return axios.get(`http://backend:5000/products?name=${name}&price=${price}&order_by=${order_by}&category=${category}&available=${available}`)
+    return axios.get(`http://backend:5000/search_products?name=${name}&price=${price}&order_by=${order_by}&category=${category}&available=${available}`)
       .then(res => res.data)
       .catch(error => { throw error });
   },
