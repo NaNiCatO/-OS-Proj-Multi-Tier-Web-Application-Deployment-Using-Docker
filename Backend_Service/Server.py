@@ -3,8 +3,10 @@ from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, String, Integer, Boolean, asc, desc
 from sqlalchemy.ext.declarative import declarative_base
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Read DATABASE_URI from environment variable
 DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres')
@@ -90,7 +92,11 @@ def get_all_products():
         for product in products
     ]
     session.close()
-    return jsonify(results)
+
+    response = jsonify(results)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
 
 
 @app.route('/create', methods=['POST'])
