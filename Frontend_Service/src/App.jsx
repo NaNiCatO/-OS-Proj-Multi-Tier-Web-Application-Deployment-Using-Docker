@@ -27,9 +27,6 @@ export default function ProductsDemo() {
     name: "",
     category: null,
     price: 0,
-    // quantity: 0,
-    // rating: 0,
-    // inventoryStatus: "INSTOCK",
     avalialbe: true,
   };
 
@@ -365,20 +362,7 @@ export default function ProductsDemo() {
               textAlign: "center",
             }}
           ></Column>
-          <Column
-            field="code"
-            header="Code"
-            sortable
-            style={{ minWidth: "12rem" }}
-            headerStyle={{
-              minWidth: "9rem",
-              backgroundColor: "#344a5f",
-              color: "white",
-              textTransform: "uppercase",
-              overflow: "auto",
-              textAlign: "center",
-            }}
-          ></Column>
+          
           <Column
             field="name"
             header="Name"
@@ -548,17 +532,7 @@ export default function ProductsDemo() {
               className="border-2 rounded-md my-auto h-8"
             />
           </div>
-          <div className="field col">
-            <label htmlFor="quantity" className="font-bold">
-              Quantity
-            </label>
-            <InputNumber
-              id="quantity"
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, "quantity")}
-              className="border-2 rounded-md my-auto h-8"
-            />
-          </div>
+          
         </div>
       </Dialog>
 
