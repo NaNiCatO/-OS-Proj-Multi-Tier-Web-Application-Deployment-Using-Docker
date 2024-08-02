@@ -57,9 +57,8 @@ export default function ProductsDemo() {
     setSubmitted(false);
     setProductDialog(true);
   };
-  console.log("new product" + product);
   //show select item id
-  console.log("selectedProducts", selectedProducts);
+  // console.log("selectedProducts", selectedProducts);
 
   // show create product 
   const hideDialog = () => {
@@ -107,7 +106,6 @@ export default function ProductsDemo() {
         setProductDialog(false);
         setProduct(emptyProduct);
 
-        console.log("Product data sent:", _product);
     }
 };
 
@@ -284,22 +282,51 @@ export default function ProductsDemo() {
   //   }
   // };
 
-  console.log("new created product" + product);
 
+  // const handleInput = async (e) => {
+  //   const value = e.target.value;
+  //   console.log("Search Input:", value); 
+  //   setGlobalFilter(value);
+  //   const results = await ProductService.searchProducts(value);
+  //   setProducts(results); 
+  // };
+  
+  const handleInput = (e) => {
+    const value = e.target.value;
+    console.log("Search Input:", value); 
+    setGlobalFilter(value);
+  };
+  
+  const handleSearchClick = async () => {
+    console.log("Search Input:", globalFilter);
+    try {
+      const results = await ProductService.searchProducts(globalFilter, null, null, null, null);
+      setProducts(results);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  };
+  
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-end">
       <h4 className="m-0">Manage Products</h4>
       <IconField iconPosition="left">
-        <FontAwesomeIcon icon={faSearch} className="mx-0.5 text-xl" />
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={globalFilter}
+          onInput={handleInput}
           placeholder="Search..."
           className="border-2"
         />
+        <Button icon={<FontAwesomeIcon icon={faSearch} />} className="ml-2" onClick={handleSearchClick} />
       </IconField>
     </div>
   );
+
+  
+
+
+  
   const productDialogFooter = (
     <React.Fragment>
       <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
