@@ -18,7 +18,7 @@ export const ProductService = {
     //   .catch(error => { throw error });
   },
   async searchProducts(name, price, order_by, category, available) {
-    return axios.get(`http://backend:5000/search_products?name=${name}&price=${price}&order_by=${order_by}&category=${category}&available=${available}`)
+    return axios.get(`http://localhost:5000/search_products?name=${name}&price=${price}&order_by=${order_by}&category=${category}&available=${available}`)
       .then(res => res.data)
       .catch(error => { throw error });
   },
