@@ -27,7 +27,7 @@ export const ProductService = {
       .then(res => res.data)
       .catch(error => { throw error });
   },
-  async pdateProduct(product) {
+  async updateProduct(product) {
     return axios.put(`http://api.example.com/products/${product.id}`, product)
       .then(res => res.data)
       .catch(error => { throw error });
