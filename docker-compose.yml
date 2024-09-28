@@ -12,9 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build:
-      context: ./Backend_Service
-      dockerfile: Dockerfile
+    build: ./Backend_Service
     container_name: flask_backend
     ports:
       - "5000:5000"
@@ -24,9 +22,7 @@ services:
       - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://postgres:mysecretpassword@db:5432/postgres
 
   frontend:
-    build:
-      context: ./Frontend_Service
-      dockerfile: Dockerfile
+    build: ./Frontend_Service
     ports:
       - "80:80"
     depends_on:
