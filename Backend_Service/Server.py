@@ -165,6 +165,47 @@ def delete_product(code):
     finally:
         session.close()
 
+@app.route('/edit/<string:code>', methods=['PUT'])
+def update_product(code):
+    session = Session()
+    try:
+        # Extract data from the JSON request body
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid input"}), 400
+
+        # Query the product by code
+        product = session.query(Product).filter_by(code=code).first()
+
+        # If the product does not exist, return an error response
+        if not product:
+            return jsonify({"error": "Product not found."}), 404
+
+        # Update the product fields
+        product.name = data.get('name', product.name)
+        product.price = data.get('price', product.price)
+        product.category = data.get('category', product.category)
+        product.available = data.get('available', product.available)
+
+        # Commit the changes
+        session.commit()
+
+        # Return a success response
+        return jsonify({
+            'code': product.code,
+            'name': product.name,
+            'price': product.price,
+            'category': product.category,
+            'available': product.available
+        }), 200
+
+    except Exception as e:
+        # Handle and return error information
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

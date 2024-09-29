@@ -23,11 +23,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 export default function ProductsDemo() {
   let emptyProduct = {
-    id: null,
+    code: null,
     name: "",
     category: null,
     price: 0,
-    avalialbe: true,
+    available: true,
   };
 
   const [products, setProducts] = useState(null);
@@ -64,6 +64,7 @@ export default function ProductsDemo() {
   const hideDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
+    setProduct(emptyProduct)
   };
 
   const hideDeleteProductDialog = () => {
@@ -82,8 +83,8 @@ export default function ProductsDemo() {
         let _products = [...products];
         let _product = { ...product };
 
-        if (product.id) {
-            const index = findIndexById(product.id);
+        if (product.code) {
+            const index = findIndexById(product.code);
 
             _products[index] = _product;
             toast.current.show({
@@ -92,8 +93,9 @@ export default function ProductsDemo() {
                 detail: "Product Updated",
                 life: 3000,
             });
+            ProductService.updateProduct(_product);
         } else {
-            _product.id = createId();
+            _product.code = createId();
             _products.push(_product);
             toast.current.show({
                 severity: "success",
@@ -101,12 +103,14 @@ export default function ProductsDemo() {
                 detail: "Product Created",
                 life: 3000,
             });
+            console.log("Product:", _product);
+            ProductService.createProduct(_product);
         }
 
         setProducts(_products);
         setProductDialog(false);
         setProduct(emptyProduct);
-
+        
     }
 };
 
@@ -132,13 +136,14 @@ export default function ProductsDemo() {
       detail: "Product Deleted",
       life: 3000,
     });
+    ProductService.deleteProduct(product.code);
   };
 
-  const findIndexById = (id) => {
+  const findIndexById = (code) => {
     let index = -1;
 
     for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+      if (products[i].code === code) {
         index = i;
         break;
       }

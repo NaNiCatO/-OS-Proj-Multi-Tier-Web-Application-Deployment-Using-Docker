@@ -28,12 +28,12 @@ export const ProductService = {
       .catch(error => { throw error });
   },
   async updateProduct(product) {
-    return axios.put(`http://api.example.com/products/${product.id}`, product)
+    return axios.put(`http://localhost:5000/edit/${product.code}`, product)
       .then(res => res.data)
       .catch(error => { throw error });
   },
-  async deleteProduct(id) {
-    return axios.delete(`http://api.example.com/products/${id}`)
+  async deleteProduct(code) {
+    return axios.delete(`http://localhost:5000/delete/${code}`)
       .then(res => res.data)
       .catch(error => { throw error });
   }
