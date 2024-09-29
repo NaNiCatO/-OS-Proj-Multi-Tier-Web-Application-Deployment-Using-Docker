@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="text"], input[type="number"], select {
+            padding: 10px;
+            width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Product Management</h1>
+        
+        <h2>Search Products</h2>
+        <div id="search-form">
+            <input type="text" id="searchName" placeholder="Search by Name">
+            <input type="text" id="searchCategory" placeholder="Search by Category">
+            <select id="searchAvailable">
+                <option value="true">Available</option>
+                <option value="false">Not Available</option>
+            </select>
+            <button onclick="searchProducts()">Search</button>
+        </div>
+
+        <h2>All Products</h2>
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Available</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <h2>Add New Product</h2>
+        <div id="create-form">
+            <input type="text" id="code" placeholder="Code" required>
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="number" id="price" placeholder="Price" required>
+            <input type="text" id="category" placeholder="Category" required>
+            <select id="available">
+                <option value="true">Available</option>
+                <option value="false">Not Available</option>
+            </select>
+            <button onclick="createProduct()">Add Product</button>
+            <div class="error" id="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000';
+    
+        // Fetch and display all products
+        function fetchAllProducts() {
+            fetch(`${API_URL}/all_products`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#productsTable tbody');
+                    tableBody.innerHTML = '';
+                    data.forEach(product => {
+                        const row = `
+                            <tr id="${product.code}">
+                                <td>${product.name}</td>
+                                <td>${product.price}</td>
+                                <td>${product.category}</td>
+                                <td>${product.available}</td>
+                                <td>
+                                    <button onclick="deleteProduct('${product.code}')">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                });
+        }
+    
+        // Search products
+        function searchProducts() {
+            const name = document.getElementById('searchName').value;
+            const category = document.getElementById('searchCategory').value;
+            const available = document.getElementById('searchAvailable').value;
+    
+            const query = `?name=${name}&category=${category}&available=${available}`;
+            fetch(`${API_URL}/search_products${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#productsTable tbody');
+                    tableBody.innerHTML = '';
+                    data.forEach(product => {
+                        const row = `
+                            <tr>
+                                <td>${product.name}</td>
+                                <td>${product.price}</td>
+                                <td>${product.category}</td>
+                                <td>${product.available}</td>
+                                <td>
+                                    <button onclick="deleteProduct('${product.code}')">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                });
+        }
+    
+        // Create new product
+        function createProduct() {
+            const code = document.getElementById('code').value;
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const category = document.getElementById('category').value;
+            const available = document.getElementById('available').value;
+    
+            const product = {
+                code: code,
+                name: name,
+                price: parseInt(price),
+                category: category,
+                available: available === 'true'
+            };
+    
+            fetch(`${API_URL}/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(product)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('error-message').innerText = data.error;
+                } else {
+                    document.getElementById('error-message').innerText = '';
+                    fetchAllProducts();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('error-message').innerText = 'An error occurred. Please try again.';
+            });
+        }
+    
+        // Delete product
+        function deleteProduct(code) {
+            if (confirm(`Are you sure you want to delete the product with code ${code}?`)) {
+                fetch(`${API_URL}/delete/${code}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.message);
+                        fetchAllProducts();  // Refresh the product list after deletion
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the product.');
+                });
+            }
+        }
+    
+        // Initialize by fetching all products
+        fetchAllProducts();
+    </script>
+    
+
+</body>
+</html>

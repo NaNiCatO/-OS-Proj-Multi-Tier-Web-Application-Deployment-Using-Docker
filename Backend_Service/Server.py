@@ -140,5 +140,31 @@ def create_product():
     finally:
         session.close()
 
+@app.route('/delete/<string:code>', methods=['DELETE'])
+def delete_product(code):
+    session = Session()
+    try:
+        # Query the product by code
+        product = session.query(Product).filter_by(code=code).first()
+
+        # If the product does not exist, return an error response
+        if not product:
+            return jsonify({"error": "Product not found."}), 404
+
+        # Delete the product
+        session.delete(product)
+        session.commit()
+
+        # Return a success response
+        return jsonify({"message": f"Product with code {code} successfully deleted."}), 200
+
+    except Exception as e:
+        # Handle and return error information
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
