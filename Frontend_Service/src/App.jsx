@@ -68,6 +68,7 @@ export default function ProductsDemo() {
 
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
+    setProduct(emptyProduct)
   };
 
   const hideDeleteProductsDialog = () => {
@@ -121,8 +122,7 @@ export default function ProductsDemo() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-
+    let _products = products.filter((val) => val.code !== product.code);
     setProducts(_products);
     setDeleteProductDialog(false);
     setProduct(emptyProduct);
@@ -368,8 +368,10 @@ export default function ProductsDemo() {
           value={products}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey="id"
+          dataKey="code"
           paginator
+          stripedRows
+          dragSelection
           rows={10}
           rowsPerPageOptions={[5, 10, 25]}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
